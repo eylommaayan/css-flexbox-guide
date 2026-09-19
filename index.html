@@ -1,0 +1,359 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>מדריך Flexbox אינטראקטיבי לחוג</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f7f9fc;
+        margin: 0;
+        padding: 25px;
+        color: #2c3e50;
+      }
+
+      h1 {
+        margin-top: 0;
+      }
+
+      /* רשת כפתורי הניווט */
+      .grid-links {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+        gap: 12px;
+        margin: 20px 0 35px 0;
+      }
+
+      .btn-topic {
+        background: #ffffff;
+        padding: 14px 10px;
+        border-radius: 8px;
+        border: 1px solid #dcdfe6;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        cursor: pointer;
+        font-weight: bold;
+        color: #1a237e;
+        text-align: center;
+        direction: ltr;
+        transition: all 0.2s ease;
+      }
+
+      .btn-topic:hover {
+        background: #e8eaf6;
+        border-color: #3f51b5;
+      }
+
+      .btn-topic.active {
+        background: cornflowerblue;
+        color: white;
+        border-color: cornflowerblue;
+      }
+
+      /* אזור התצוגה וההסבר */
+      .display-area {
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+      }
+
+      .lesson-info {
+        border-right: 5px solid cornflowerblue;
+        padding: 5px 20px;
+        margin-bottom: 25px;
+        background: #fdfdfd;
+      }
+
+      .lesson-info h2 {
+        margin: 0 0 8px 0;
+        direction: ltr;
+        text-align: right;
+        color: #1a237e;
+        font-size: 24px;
+      }
+
+      .lesson-info p {
+        margin: 0;
+        font-size: 17px;
+        color: #4a5568;
+      }
+
+      /* המכולה הראשית והפריטים מתוך תמונות השיעור */
+      .demo-container {
+        margin: 20px 0;
+        padding: 20px 0;
+        background-color: burlywood;
+        border-radius: 4px;
+        min-height: 120px;
+        box-sizing: border-box;
+      }
+
+      .item {
+        padding: 30px;
+        margin: 10px;
+        background-color: cornflowerblue;
+        text-align: center;
+        font-size: 30px;
+        color: white;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>מדריך Flexbox אינטראקטיבי לחוג</h1>
+    <p>בחר נושא כדי לראות את ההדגמה החיה וההסבר:</p>
+
+    <!-- כפתורי הנושאים -->
+    <div class="grid-links" id="buttonsGrid"></div>
+
+    <!-- מסך ההדגמה החיה -->
+    <div class="display-area">
+      <div class="lesson-info">
+        <h2 id="topicTitle">display: flex</h2>
+        <p id="topicDesc">
+          מגדיר מכולה גמישה לאורך כל רוחב הדף. הפריטים מסתדרים אוטומטית בשורה.
+        </p>
+      </div>
+
+      <!-- כאן נכנס העיצוב החי -->
+      <div class="demo-container" id="containerBox"></div>
+    </div>
+
+    <script>
+      // מאגר השיעורים וההגדרות
+      const topics = [
+        {
+          id: "display: flex",
+          desc: "מגדיר מכולה גמישה לאורך כל רוחב הדף. הפריטים מסתדרים אוטומטית בשורה אופקית.",
+          containerCss: "display: flex;",
+          itemsCount: 5,
+        },
+        {
+          id: "display: inline-flex",
+          desc: "המכולה מוגדרת כאלמנט שורה (Inline). היא לוקחת רוחב וגובה רק לפי גודל הפריטים שבפנים ולא נמתחת על כל המסך.",
+          containerCss: "display: inline-flex;",
+          itemsCount: 5,
+        },
+        {
+          id: "flex-direction: row",
+          desc: "סידור האלמנטים לפי ה-Main Axis משמאל לימין (ברירת מחדל).",
+          containerCss: "display: flex; flex-direction: row;",
+          itemsCount: 5,
+        },
+        {
+          id: "flex-direction: row-reverse",
+          desc: "כיוון הפוך: מסדר את הפריטים בשורה אופקית מימין לשמאל.",
+          containerCss: "display: flex; flex-direction: row-reverse;",
+          itemsCount: 5,
+        },
+        {
+          id: "flex-direction: column",
+          desc: "סידור האלמנטים בטור אנכי מלמעלה למטה.",
+          containerCss: "display: flex; flex-direction: column;",
+          itemsCount: 5,
+        },
+        {
+          id: "flex-direction: column-reverse",
+          desc: "סידור האלמנטים בטור אנכי אך בכיוון הפוך מלמטה למעלה.",
+          containerCss: "display: flex; flex-direction: column-reverse;",
+          itemsCount: 5,
+        },
+        {
+          id: "flex-wrap: nowrap",
+          desc: "המכולה לא עוטפת שורה. כל האלמנטים נדחסים בשורה אחת וגולשים החוצה במסך צר.",
+          containerCss: "display: flex; flex-wrap: nowrap; width: 450px;",
+          itemsCount: 6,
+        },
+        {
+          id: "flex-wrap: wrap",
+          desc: "המכולה עוטפת שורה ומעבירה אלמנטים שאין להם מקום לשורה הבאה.",
+          containerCss: "display: flex; flex-wrap: wrap; width: 450px;",
+          itemsCount: 6,
+        },
+        {
+          id: "flex-flow: row wrap",
+          desc: "קיצור שמאפשר להגדיר באותה פקודה גם direction וגם wrap.",
+          containerCss: "display: flex; flex-flow: row wrap; width: 450px;",
+          itemsCount: 6,
+        },
+        {
+          id: "justify-content: flex-start",
+          desc: "מיישר ומצמיד את כל הפריטים יחד להתחלת השורה.",
+          containerCss: "display: flex; justify-content: flex-start;",
+          itemsCount: 5,
+        },
+        {
+          id: "justify-content: center",
+          desc: "ממרכז את כל הפריטים באמצע השורה.",
+          containerCss: "display: flex; justify-content: center;",
+          itemsCount: 5,
+        },
+        {
+          id: "justify-content: flex-end",
+          desc: "מצמיד את כל הפריטים יחד לסוף השורה.",
+          containerCss: "display: flex; justify-content: flex-end;",
+          itemsCount: 5,
+        },
+        {
+          id: "justify-content: space-between",
+          desc: "האלמנט הראשון והאחרון מוצמדים לקצוות המכולה, והשאר מפוזרים עם רווח שווה ביניהם.",
+          containerCss: "display: flex; justify-content: space-between;",
+          itemsCount: 5,
+        },
+        {
+          id: "justify-content: space-around",
+          desc: "רווח שווה משני הצדדים של כל אלמנט (הרווח הפנימי כפול מהרווח בקצוות).",
+          containerCss: "display: flex; justify-content: space-around;",
+          itemsCount: 5,
+        },
+        {
+          id: "justify-content: space-evenly",
+          desc: "פריסה שווה לחלוטין: הרווח בין כל האלמנטים ומהקצוות שווה במדויק.",
+          containerCss: "display: flex; justify-content: space-evenly;",
+          itemsCount: 5,
+        },
+        {
+          id: "align-items: stretch",
+          desc: "מותח את האלמנטים מקצה לקצה לאורך גובה המכולה (ברירת מחדל).",
+          containerCss: "display: flex; height: 260px; align-items: stretch;",
+          itemsCount: 5,
+          customItemCss: "height: auto;",
+        },
+        {
+          id: "align-items: flex-start",
+          desc: "מיישר את האלמנטים לתחילת הגובה (למעלה).",
+          containerCss:
+            "display: flex; height: 260px; align-items: flex-start;",
+          itemsCount: 5,
+        },
+        {
+          id: "align-items: flex-end",
+          desc: "מיישר את האלמנטים לתחתית הגובה (למטה).",
+          containerCss: "display: flex; height: 260px; align-items: flex-end;",
+          itemsCount: 5,
+        },
+        {
+          id: "align-items: center",
+          desc: "ממרכז את האלמנטים בדיוק באמצע גובה המכולה.",
+          containerCss: "display: flex; height: 260px; align-items: center;",
+          itemsCount: 5,
+        },
+        {
+          id: "align-items: baseline",
+          desc: "מיישר את האלמנטים כך שקו הבסיס של האותיות והטקסט יהיה אחיד, גם בגופנים שונים.",
+          containerCss: "display: flex; height: 260px; align-items: baseline;",
+          itemsCount: 5,
+          customItemsArray: [
+            { text: "1", style: "font-size: 20px;" },
+            { text: "2", style: "font-size: 45px;" },
+            { text: "3", style: "font-size: 16px;" },
+            { text: "4", style: "font-size: 32px;" },
+            { text: "5", style: "font-size: 24px;" },
+          ],
+        },
+        {
+          id: "align-content (שורות מרובות)",
+          desc: "מרווח את השורות עצמן כאשר יש wrap. (בדוגמה זו מוגדר space-between לאורך הגובה).",
+          containerCss:
+            "display: flex; flex-wrap: wrap; height: 380px; width: 420px; align-content: space-between;",
+          itemsCount: 6,
+        },
+        {
+          id: "Items: order & align-self",
+          desc: "שינוי סדר ויישור לפריטים בודדים: פריט 5 הוזז לראשון (order: -1), פריט 1 הוזז לסוף (order: 1) ונמתח למעלה.",
+          containerCss: "display: flex; height: 260px; align-items: center;",
+          customItemsArray: [
+            { text: "1", style: "order: 1; align-self: flex-start;" },
+            { text: "2", style: "align-self: flex-end;" },
+            { text: "3", style: "align-self: stretch; height: auto;" },
+            { text: "4", style: "" },
+            { text: "5", style: "order: -1;" },
+          ],
+        },
+        {
+          id: "flex-grow",
+          desc: "מאפשר לפריט לתפוס את שאר המקום הפנוי. כאן פריט 1 קיבל flex-grow: 3 ופריט 5 קיבל flex-grow: 1.",
+          containerCss: "display: flex;",
+          customItemsArray: [
+            { text: "1", style: "flex-grow: 3; order: 1;" },
+            { text: "2", style: "" },
+            { text: "3", style: "" },
+            { text: "4", style: "" },
+            { text: "5", style: "flex-grow: 1; order: -1;" },
+          ],
+        },
+        {
+          id: "flex-shrink",
+          desc: "מגדיר קצב כיווץ כשאין מקום: פריט 4 קיבל flex-shrink: 4 ולכן יתכווץ פי 4 יותר מהר כשנקטין את המסך.",
+          containerCss: "display: flex; width: 100%;",
+          customItemsArray: [
+            { text: "1", style: "width: 250px; flex-shrink: 1;" },
+            { text: "2", style: "width: 250px; flex-shrink: 1;" },
+            { text: "3", style: "width: 250px; flex-shrink: 1;" },
+            {
+              text: "4",
+              style: "width: 250px; flex-shrink: 4; background-color: #2b5cb8;",
+            },
+            { text: "5", style: "width: 250px; flex-shrink: 1;" },
+          ],
+        },
+      ];
+
+      const grid = document.getElementById("buttonsGrid");
+      const titleEl = document.getElementById("topicTitle");
+      const descEl = document.getElementById("topicDesc");
+      const boxEl = document.getElementById("containerBox");
+
+      function renderTopic(topic, activeBtn) {
+        // עדכון כפתור פעיל
+        document
+          .querySelectorAll(".btn-topic")
+          .forEach((b) => b.classList.remove("active"));
+        if (activeBtn) activeBtn.classList.add("active");
+
+        // עדכון כותרות והסבר
+        titleEl.innerText = topic.id;
+        descEl.innerText = topic.desc;
+
+        // איפוס והחלת CSS למכולה
+        boxEl.style = "";
+        boxEl.style.cssText = topic.containerCss;
+
+        // בניית הפריטים
+        boxEl.innerHTML = "";
+        if (topic.customItemsArray) {
+          topic.customItemsArray.forEach((itemData) => {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerText = itemData.text;
+            div.style.cssText = itemData.style;
+            boxEl.appendChild(div);
+          });
+        } else {
+          const count = topic.itemsCount || 5;
+          for (let i = 1; i <= count; i++) {
+            const div = document.createElement("div");
+            div.className = "item";
+            div.innerText = i;
+            if (topic.customItemCss) div.style.cssText = topic.customItemCss;
+            boxEl.appendChild(div);
+          }
+        }
+      }
+
+      // יצירת הכפתורים במסך
+      topics.forEach((topic, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "btn-topic";
+        btn.innerText = `${idx + 1}. ${topic.id}`;
+        btn.onclick = () => renderTopic(topic, btn);
+        grid.appendChild(btn);
+      });
+
+      // הפעלה ראשונית של הנושא הראשון
+      renderTopic(topics[0], grid.firstChild);
+    </script>
+  </body>
+</html>
