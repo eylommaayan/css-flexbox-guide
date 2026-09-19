@@ -1,4 +1,4 @@
-# 📦 CSS Flexbox — מדריך אינטראקטיבי לחוג
+# 📦 CSS Flexbox
 
 מדריך לימודי חי המציג את כל מאפייני Flexbox (הן של המכולה והן של הפריטים הבודדים) עם דוגמאות ויזואליות והסברים בעברית.
 <img width="1878" height="817" alt="image" src="https://github.com/user-attachments/assets/388645d5-1abd-4fcd-8cc5-36a04443a243" />
